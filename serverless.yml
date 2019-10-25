@@ -1,0 +1,22 @@
+service: mondrian-bot
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-west-2'}
+  profile: mondrianBotServerless
+
+custom:
+  env: ${file(./${self:provider.stage}.env.json)}
+
+functions:
+  bot:
+    handler: src/handler.bot
+    events:
+      - schedule: cron(0 */6 * * ? *)
+    environment:
+      TWITTER_CONSUMER_KEY: ${self:custom.env.TWITTER_CONSUMER_KEY}
+      TWITTER_CONSUMER_SECRET: ${self:custom.env.TWITTER_CONSUMER_SECRET}
+      TWITTER_ACCESS_TOKEN: ${self:custom.env.TWITTER_ACCESS_TOKEN}
+      TWITTER_ACCESS_TOKEN_SECRET: ${self:custom.env.TWITTER_ACCESS_TOKEN_SECRET}
