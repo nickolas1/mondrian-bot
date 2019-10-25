@@ -14,7 +14,7 @@ functions:
   bot:
     handler: src/handler.bot
     events:
-      - schedule: cron(0 */1 * * ? *)
+      - schedule: cron(0 */6 * * ? *)
     environment:
       TWITTER_CONSUMER_KEY: ${self:custom.env.TWITTER_CONSUMER_KEY}
       TWITTER_CONSUMER_SECRET: ${self:custom.env.TWITTER_CONSUMER_SECRET}

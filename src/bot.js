@@ -18,10 +18,10 @@ const screenshot = async (browser) => {
   const titleEl = await page.$('.description-title');
   const text = await (await titleEl.getProperty('textContent')).jsonValue();
   console.log(`title found: ${text}`);
-  // if (!process.env.IS_LOCAL) {
-  //     const result = await sendTweet(text);
-  //     console.log(`result: ${result}`);
-  // }
+  if (!process.env.IS_LOCAL) {
+      const result = await sendTweet(text);
+      console.log(`result: ${result}`);
+  }
 
   await browser.close();
 };
