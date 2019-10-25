@@ -203,8 +203,7 @@ Temporary Items
 
 # End of https://www.gitignore.io/api/osx,node,linux,intellij
 
-.env
+dev.env.json
 *.jpg
 dist/
-package.zip
 .idea

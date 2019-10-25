@@ -2,29 +2,21 @@
   "name": "mondrian-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/handler.js",
   "scripts": {
-    "package": "npm run package-prepare && cp chrome/headless_shell.tar.gz dist && cd dist && zip -rq ../package.zip .",
-    "package-nochrome": "npm run package-prepare && cd dist && zip -rq ../package.zip .",
-    "package-prepare": "npm run babel && cp -r package.json dist && cp .env dist && cd dist && PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 npm install --production",
-    "babel": "rm -rf dist && mkdir dist && ./node_modules/.bin/babel src --out-dir dist",
-    "local": "npm run babel && cp -r node_modules dist && node dist/starter-kit/local.js",
-    "start": "NODE_ENV=production node index-local.js",
-    "start:dev": "NODE_ENV=development node index-local.js"
+    "deploy:full": "sls deploy --stage dev",
+    "deploy:code": "sls deploy function --stage dev -f bot",
+    "invoke:local": "sls invoke local -f bot"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.111.0",
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
-    "cron": "^1.4.1",
-    "dotenv": "^6.1.0",
-    "express": "^4.16.4",
-    "puppeteer": "^1.7.0",
-    "serverless-hooks-plugin": "^1.1.0",
-    "tar": "^4.0.1",
+    "chrome-aws-lambda": "^1.20.4",
+    "puppeteer-core": "^2.0.0",
     "twit": "^2.2.11"
+  },
+  "devDependencies": {
+    "puppeteer": "^2.0.0"
   }
 }
