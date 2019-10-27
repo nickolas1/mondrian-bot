@@ -1,4 +1,8 @@
 const Twit = require('twit');
+const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
+const fs = require('fs');
+
+const s3 = new AWS.S3();
 
 const bot = new Twit({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -16,15 +20,35 @@ const screenshot = async (browser) => {
   await image.screenshot({ path: '/tmp/img.jpg', quality: 95 });
   console.log('image saved');
   const titleEl = await page.$('.description-title');
-  const text = await (await titleEl.getProperty('textContent')).jsonValue();
-  console.log(`title found: ${text}`);
-  if (!process.env.IS_LOCAL) {
-      const result = await sendTweet(text);
-      console.log(`result: ${result}`);
+  const titleText = await (await titleEl.getProperty('textContent')).jsonValue();
+  console.log(`title found: ${titleText}`);
+  const s3params = {
+    Bucket: process.env.IMAGE_BUCKET,
+    Key: titleText,
+    Body: fs.readFileSync('/tmp/img.jpg')
   }
+  await saveToS3(titleText);
+  console.log(`put to S3: ${process.env.IMAGE_BUCKET}/${titleText}`);
+  // if (process.env.IS_LOCAL) {
+  //     const result = await sendTweet(text);
+  //     console.log(`result: ${result}`);
+  // }
 
   await browser.close();
 };
+
+const saveToS3 = async text => {
+  let keys = text.match(/[0-9]+/g);
+  let key = new Date().getTime();
+  if (keys != null && keys.length > 0) {
+    key = keys[0];
+  }
+  return await s3.putObject({
+    Bucket: process.env.IMAGE_BUCKET,
+    Key: key,
+    Body: fs.readFileSync('/tmp/img.jpg')
+  }).promise();
+}
 
 const sendTweet = text => {
   return new Promise((resolve, reject) => {

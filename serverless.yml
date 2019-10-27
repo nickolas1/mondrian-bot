@@ -6,6 +6,11 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-west-2'}
   profile: mondrianBotServerless
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: "arn:aws:s3:::${self:custom.env.IMAGE_BUCKET}/*"
 
 custom:
   env: ${file(./${self:provider.stage}.env.json)}
@@ -20,3 +25,11 @@ functions:
       TWITTER_CONSUMER_SECRET: ${self:custom.env.TWITTER_CONSUMER_SECRET}
       TWITTER_ACCESS_TOKEN: ${self:custom.env.TWITTER_ACCESS_TOKEN}
       TWITTER_ACCESS_TOKEN_SECRET: ${self:custom.env.TWITTER_ACCESS_TOKEN_SECRET}
+      IMAGE_BUCKET: ${self:custom.env.IMAGE_BUCKET}
+
+resources:
+  Resources:
+    S3BucketOutputs:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.env.IMAGE_BUCKET}
